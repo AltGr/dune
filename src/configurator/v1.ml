@@ -635,8 +635,14 @@ module Pkg_config = struct
         | "" -> []
         | s  -> String.split s ~on:' ' |> List.filter ~f:(( <> ) "")
       in
+      let clink =
+        run "--libs" |> List.fold_left ~init:[] ~f:(fun acc f ->
+            if String.is_prefix f ~prefix:"-l" then f::acc
+            else f::"-ccopt"::acc)
+        |> List.rev
+      in
       Ok
-        { libs   = run "--libs"
+        { libs   = clink
         ; cflags = run "--cflags"
         }
     else
