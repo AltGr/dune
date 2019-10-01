@@ -633,7 +633,7 @@ module Pkg_config = struct
                              t.pkg_config [what; package])
         with
         | "" -> []
-        | s  -> String.split s ~on:' '
+        | s  -> String.split s ~on:' ' |> List.filter ~f:(( <> ) "")
       in
       Ok
         { libs   = run "--libs"
