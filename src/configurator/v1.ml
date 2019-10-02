@@ -638,7 +638,9 @@ module Pkg_config = struct
       let clink =
         run "--libs" |> List.fold_left ~init:[] ~f:(fun acc f ->
             if String.is_prefix f ~prefix:"-l" then f::acc
-            else f::"-ccopt"::acc)
+            else match String.drop_prefix f ~prefix:"-Wl," with
+              | Some s -> s::"-link"::acc
+              | None -> failwith f)
         |> List.rev
       in
       Ok
